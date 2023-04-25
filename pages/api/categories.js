@@ -6,7 +6,6 @@ const handler = nextConnect();
 handler.use(middleware);
 
 handler.get(async (req,res) => {
-  var ans = []
   let doc = await req.db.collection("categories").find({}).toArray();
   console.log(doc);
   res.json(doc);
