@@ -19,6 +19,8 @@ const Diary = () => {
   const [open,setOpen] = useState(false)
   const [entryDate,setEntryDate] = useState(new Date())
   const [entryType,setEntryType] = useState("TASK")
+  const [entryTitle, setEntryTitle] = useState("")
+  const [entryDescription, setEntryDescription] = useState("")
 
   const fetchDiary = (date) => {
 
@@ -38,6 +40,27 @@ const Diary = () => {
     console.log("new entry submit")
     console.log(entryType)
     console.log(entryDate)
+    console.log(entryTitle)
+    console.log(entryDescription)
+    const reqBody = {
+      "title":entryTitle,
+      "description":entryDescription,
+      "type":entryType,
+      "date":entryDate.toISOString().split("T")[0],
+      "state":"CREATED"
+    }
+    console.log(reqBody)
+    const url = "/api/diary"
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(reqBody)
+    }
+    fetch(url,requestOptions)
+    .then(response => response.json())
+    .then(res => {
+      console.log(res)
+    })
     setOpen(false)
   }
 
@@ -65,6 +88,8 @@ const Diary = () => {
             type="text"
             fullWidth
             variant="standard"
+            value={entryTitle}
+            onChange={(e)=>setEntryTitle(e.target.value)}
           />
           <TextField
             margin="dense"
@@ -73,6 +98,8 @@ const Diary = () => {
             type="text"
             fullWidth
             variant="standard"
+            value={entryDescription}
+            onChange={(e)=>setEntryDescription(e.target.value)}
           />
           <ReactDatePicker selected = {entryDate} onChange = {(d) => setEntryDate(d)}/>
 
