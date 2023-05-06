@@ -11,6 +11,7 @@ import {FormControl} from '@mui/material';
 import {FormLabel} from '@mui/material';
 import {FormControlLabel} from '@mui/material';
 import {Radio} from '@mui/material';
+import TaskListComponent from './components/TaskListComponent';
 
 
 const Diary = () => {
@@ -21,9 +22,10 @@ const Diary = () => {
   const [entryType,setEntryType] = useState("TASK")
   const [entryTitle, setEntryTitle] = useState("")
   const [entryDescription, setEntryDescription] = useState("")
+  const [taskList, setTaskList] = useState([])
 
   const fetchDiary = (date) => {
-
+    setDate(date)
     console.log("Fetch diary ", date)
     const isoDate = date.toISOString().split("T")[0];
     const url = "/api/diary/" + isoDate
@@ -31,6 +33,7 @@ const Diary = () => {
     fetch(url)
     .then(response => response.json())
     .then(res => {
+      setTaskList(res)
       console.log("res = ", res)
     })
     return date
@@ -64,12 +67,28 @@ const Diary = () => {
     setOpen(false)
   }
 
+  const dummyTaskList = [
+    {
+      title:"task 1",
+      description:"task 1 description"
+    },
+    {
+      title:"Task 2",
+      description:"task 2 description"
+    },
+    {
+      title:"Task 3",
+      description:"Task 3 description"
+    }
+  ]
+
   return (
     <div>
       <p>Date</p>
       <div>
         <ReactDatePicker selected = {date} onChange = {(date) => fetchDiary(date)}/>
       </div>
+      <TaskListComponent taskList={taskList}/>
       <div>
         <Button variant="contained" size="small" onClick={()=>setOpen(true)}>+</Button>
       </div>

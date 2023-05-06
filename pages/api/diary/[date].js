@@ -7,8 +7,11 @@ handler.use(middleware);
 
 handler.get(async (req,res) => {
   const date = new Date(req.query.date);
+  var nextDate = new Date(date)
+  nextDate.setDate(date.getDate() + 1)
   console.log("diary get date" + date)
-  let doc = await req.db.collection("dailyDiary").find({"date":date}).toArray();
+  console.log("next date ", nextDate)
+  let doc = await req.db.collection("dailyDiary").find({"date":{$gte : date, $lt : nextDate}}).toArray();
   console.log(doc);
   res.json(doc);
 });
