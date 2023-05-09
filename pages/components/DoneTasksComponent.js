@@ -9,7 +9,7 @@ const DoneTasksComponent = (props) => {
   return ( 
     <div>
       {
-        doneTasks.map((task, index) => (
+        doneTasks && doneTasks.map((task, index) => (
           <Card variant="outlined">
             <CardContent>
               {task.title} <br/>

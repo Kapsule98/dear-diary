@@ -23,7 +23,7 @@ const TaskListComponent = (props) => {
   return (
     <div>
       {
-        taskList.map((task, index) => (
+        taskList && taskList.map((task, index) => (
           <Accordion>
             <AccordionSummary 
               expandIcon={<ExpandMore />}
