@@ -12,6 +12,7 @@ import {FormLabel} from '@mui/material';
 import {FormControlLabel} from '@mui/material';
 import {Radio} from '@mui/material';
 import TaskListComponent from './components/TaskListComponent';
+import DoneTasksComponent from './components/DoneTasksComponent';
 
 
 const Diary = () => {
@@ -23,6 +24,15 @@ const Diary = () => {
   const [entryTitle, setEntryTitle] = useState("")
   const [entryDescription, setEntryDescription] = useState("")
   const [taskList, setTaskList] = useState([])
+  const [done, setDone]  = useState([])
+
+  const getTasks = (res) => {
+    return res.filter((x)=>{return x.state !== "DONE"})
+  }
+
+  const getDone = (res) => {
+    return res.filter((x)=>{return x.state === "DONE"})
+  }
 
   const fetchDiary = (date) => {
     setDate(date)
@@ -33,7 +43,8 @@ const Diary = () => {
     fetch(url)
     .then(response => response.json())
     .then(res => {
-      setTaskList(res)
+      setTaskList(getTasks(res))
+      setDone(getDone(res))
       console.log("res = ", res)
     })
     return date
@@ -66,22 +77,6 @@ const Diary = () => {
     })
     setOpen(false)
   }
-
-  const dummyTaskList = [
-    {
-      title:"task 1",
-      description:"task 1 description"
-    },
-    {
-      title:"Task 2",
-      description:"task 2 description"
-    },
-    {
-      title:"Task 3",
-      description:"Task 3 description"
-    }
-  ]
-
   return (
     <div>
       <p>Date</p>
@@ -89,6 +84,8 @@ const Diary = () => {
         <ReactDatePicker selected = {date} onChange = {(date) => fetchDiary(date)}/>
       </div>
       <TaskListComponent taskList={taskList}/>
+      <p>Done</p>
+      <DoneTasksComponent doneList={done} />
       <div>
         <Button variant="contained" size="small" onClick={()=>setOpen(true)}>+</Button>
       </div>

@@ -3,8 +3,22 @@ import { Done, ExpandMore } from "@mui/icons-material";
 
 const TaskListComponent = (props) => {
   const taskList = props.taskList
-  const markDone = (_id) => {
-    console.log(_id)
+  const markDone = (taskId) => {
+    console.log(taskId)
+    const reqBody = {
+      _id:taskId
+    }
+    const url = "/api/tasks/update-task"
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(reqBody)
+    }
+    fetch(url,requestOptions)
+    .then(response => response.json())
+    .then(res => {
+      console.log(res)
+    })
   }
   return (
     <div>
@@ -25,36 +39,6 @@ const TaskListComponent = (props) => {
           </Accordion>
         ))
       }
-      {/* <Accordion>
-        <AccordionSummary
-          expandIcon={<ExpandMore />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-        >
-          <Typography>{taskList[0]}</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
-          </Typography>
-        </AccordionDetails>
-      </Accordion>
-      <Accordion>
-        <AccordionSummary
-          expandIcon={<ExpandMore />}
-          aria-controls="panel2a-content"
-          id="panel2a-header"
-        >
-          <Typography>Accordion 2</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
-          </Typography>
-        </AccordionDetails>
-      </Accordion> */}
     </div>
   );
 }
