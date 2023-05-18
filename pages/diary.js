@@ -1,6 +1,6 @@
 
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {Button} from '@mui/material';
@@ -13,10 +13,13 @@ import {FormControlLabel} from '@mui/material';
 import {Radio} from '@mui/material';
 import TaskListComponent from './components/TaskListComponent';
 import DoneTasksComponent from './components/DoneTasksComponent';
+import {CircularProgress} from '@mui/material';
+import {Box} from '@mui/material';
 
 
 const Diary = () => {
 
+  const [loading,setLoading] = useState(false)
   const [date,setDate] = useState(new Date())
   const [open,setOpen] = useState(false)
   const [entryDate,setEntryDate] = useState(new Date())
@@ -34,12 +37,27 @@ const Diary = () => {
     return res.filter((x)=>{return x.state === "DONE"})
   }
 
+  useEffect(()=> {
+    setLoading(true);
+    const isoDate = date.toISOString().split("T")[0];
+    const url = "/api/diary/" + isoDate
+    fetch(url)
+    .then(response => response.json())
+    .then(res => {
+      setTaskList(getTasks(res))
+      setDone(getDone(res))
+      console.log("res = ", res)
+    }).catch(err => alert("something went wrong" + err))
+    .finally(()=>setLoading(false))
+  }, [])
+
   const fetchDiary = (date) => {
     setDate(date)
     console.log("Fetch diary ", date)
     const isoDate = date.toISOString().split("T")[0];
     const url = "/api/diary/" + isoDate
     console.log("Fetch url = ", url)
+    setLoading(true)
     fetch(url)
     .then(response => response.json())
     .then(res => {
@@ -47,6 +65,10 @@ const Diary = () => {
       setDone(getDone(res))
       console.log("res = ", res)
     })
+    .catch(err => alert("something went wrong" + err))
+    .finally(()=>setLoading(false))
+
+    
     return date
 
   }
@@ -70,12 +92,22 @@ const Diary = () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(reqBody)
     }
+    setLoading(true)
     fetch(url,requestOptions)
     .then(response => response.json())
     .then(res => {
       console.log(res)
     })
+    .catch((err) => alert(err))
+    .finally(()=>setLoading(false))
     setOpen(false)
+  }
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex' }}>
+        <CircularProgress />
+      </Box>
+    )
   }
   return (
     <div>
