@@ -47,13 +47,14 @@ const Diary = () => {
     setLoading(true);
     const isoDate = date.toISOString().split("T")[0];
     const url = "/api/diary/" + isoDate
+    console.log("url = ", url)
     fetch(url)
     .then(response => response.json())
     .then(res => {
+      console.log("list = ", res)
       setTaskList(getTasks(res))
       setDone(getDone(res))
       setNotes(getNotes(res))
-      console.log("res = ", res)
     }).catch(err => alert("something went wrong" + err))
     .finally(()=>setLoading(false))
   }, [])
