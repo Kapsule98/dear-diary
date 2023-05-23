@@ -15,6 +15,7 @@ import TaskListComponent from './components/TaskListComponent';
 import DoneTasksComponent from './components/DoneTasksComponent';
 import {CircularProgress} from '@mui/material';
 import {Box} from '@mui/material';
+import NotesComponent from './components/NotesComponent';
 
 
 const Diary = () => {
@@ -28,14 +29,19 @@ const Diary = () => {
   const [entryDescription, setEntryDescription] = useState("")
   const [taskList, setTaskList] = useState([])
   const [done, setDone]  = useState([])
+  const [notes, setNotes] = useState([])
 
-  const getTasks = (res) => {
-    return res.filter((x)=>{return x.state !== "DONE"})
+  const getTasks = (list) => {
+    return list.filter((x)=>{return (x.type === "TASK" && x.state !== "DONE")})
   }
 
-  const getDone = (res) => {
-    return res.filter((x)=>{return x.state === "DONE"})
+  const getDone = (list) => {
+    return list.filter((x)=>{return (x.type === "TASK" && x.state === "DONE")})
   }
+
+  const getNotes = (list) => {
+    return list.filter((x) => {return x.type === "NOTE"})
+  } 
 
   useEffect(()=> {
     setLoading(true);
@@ -46,6 +52,7 @@ const Diary = () => {
     .then(res => {
       setTaskList(getTasks(res))
       setDone(getDone(res))
+      setNotes(getNotes(res))
       console.log("res = ", res)
     }).catch(err => alert("something went wrong" + err))
     .finally(()=>setLoading(false))
@@ -72,12 +79,24 @@ const Diary = () => {
     return date
 
   }
+
+  const resetDialogInputs = () => {
+    setEntryType("TASK")
+    setEntryDate(new Date())
+    setEntryTitle("")
+    setEntryDescription("")
+  }
   const submitEntry = ()=> {
     console.log("new entry submit")
     console.log(entryType)
     console.log(entryDate)
     console.log(entryTitle)
     console.log(entryDescription)
+    if(entryTitle === "") {
+      alert("title cant be empty bruh")
+      return
+    }
+    resetDialogInputs()
     const reqBody = {
       "title":entryTitle,
       "description":entryDescription,
@@ -118,6 +137,10 @@ const Diary = () => {
       <TaskListComponent taskList={taskList}/>
       <p>Done</p>
       <DoneTasksComponent doneList={done} />
+      <div>
+        <p>Notes</p>
+        <NotesComponent notes={notes} />
+      </div>
       <div>
         <Button variant="contained" size="small" onClick={()=>setOpen(true)}>+</Button>
       </div>

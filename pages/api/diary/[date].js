@@ -11,7 +11,9 @@ handler.get(async (req,res) => {
   nextDate.setDate(date.getDate() + 1)
   console.log("diary get date" + date)
   console.log("next date ", nextDate)
-  let doc = await req.db.collection("dailyDiary").find({"date":{$gte : date, $lt : nextDate}}).toArray();
+  const notes = {"type":"NOTE"}
+  const tasks = {"date":{$lt : nextDate}, "type":"TASK", "state":{$ne:"DONE"}}
+  let doc = await req.db.collection("dailyDiary").find({$or:[notes,tasks]}).toArray();
   console.log(doc);
   res.json(doc);
 });

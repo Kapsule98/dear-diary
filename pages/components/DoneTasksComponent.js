@@ -10,7 +10,7 @@ const DoneTasksComponent = (props) => {
     <div>
       {
         doneTasks && doneTasks.map((task, index) => (
-          <Card variant="outlined">
+          <Card variant="outlined" key={index}>
             <CardContent>
               {task.title} <br/>
               {task.description}
